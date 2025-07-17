@@ -1,8 +1,17 @@
-import random
+import pyroscope
 from fastapi import FastAPI
 
 from opentelemetry import trace
 from opentelemetry import metrics
+
+from utils import dice_random_number
+
+pyroscope.configure(
+  application_name = "my.python.app", # replace this with some name for your application
+  server_address   = "http://localhost:4040", # replace this with the address of your Pyroscope server
+  sample_rate      = 100, # default is 100
+  oncpu            = True, # report cpu time only; default is True
+)
 
 tracer = trace.get_tracer("diceroller.tracer")
 meter = metrics.get_meter("diceroller.meter")
@@ -21,11 +30,7 @@ app = FastAPI()
 @app.get("/dice/roll")
 async def diceRoll():
     with tracer.start_as_current_span("roll") as rollspan:
-        result = random_number()
+        result = dice_random_number()
         rollspan.set_attribute("roll.value", result)
         roll_counter.add(1, {"roll.value": result})
         return result
-
-def random_number():
-    result = random.randrange(1, 6)
-    return result
