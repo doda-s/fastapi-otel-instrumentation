@@ -18,4 +18,8 @@ pip install -r requirements.txt
 
 ## Inicializar Aplicação
 
-#TODO fazer seção de inicialização da aplicação
+Para inicializar a aplicação, basta executar o comando abaixo:
+
+``` bash
+opentelemetry-instrument --traces_exporter console,otlp --metrics_exporter console,otlp --logs_exporter console,otlp --service_name pyotl-demo --exporter_otlp_endpoint http://localhost:4317 opentelemetry-instrument uvicorn src.main:app --host 0.0.0.0 --port 5000
+```
